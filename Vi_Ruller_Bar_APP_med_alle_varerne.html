@@ -6,6 +6,9 @@
 <meta name="theme-color" content="#111111">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Vi Ruller Bar">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>Vi Ruller Bar – Tjekliste</title>
 <style>
 :root{--bg:#f3f3f0;--card:#fff;--text:#111;--muted:#707070;--line:#e4e4df;--soft:#efefe9;--done:#eef7ef}
@@ -32,6 +35,7 @@ input[type=checkbox]{width:21px;height:21px;accent-color:#111}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 button{border:0;border-radius:13px;padding:12px 10px;font-size:14px;font-weight:800;background:#111;color:#fff}
 button.secondary{background:var(--soft);color:#111}
+button.danger{background:#fff3f3;color:#a12626;border:1px solid #efd2d2}
 .add{padding:12px}
 .addgrid{display:grid;grid-template-columns:1fr 140px auto;gap:8px}
 .custom-row .namewrap{display:flex;justify-content:space-between;align-items:center;gap:5px}
@@ -333,10 +337,14 @@ button.secondary{background:var(--soft);color:#111}
       <button id="copyList">Kopiér indkøbsliste</button>
       <button id="newEvent" class="secondary">Nyt arrangement</button>
     </div>
+    <div class="actions">
+      <button id="resetAll" class="danger">Ryd alt</button>
+      <button id="clearChecks" class="secondary">Fjern flueben</button>
+    </div>
   </div>
 </section>
 
-<div class="note">De faste varer står direkte i siden, så de altid kan ses. Gemmefunktion, egne varer og indkøbslisten virker, når siden åbnes som web-app i Safari.</div>
+<div class="note">De faste varer står direkte i siden, så de altid kan ses. Gemmefunktion, egne varer, Ryd alt og indkøbslisten virker, når siden åbnes som web-app i Safari.</div>
 </div>
 
 <script>
@@ -476,6 +484,27 @@ document.getElementById("newEvent").onclick=()=>{
     r.classList.remove("done");
   });
   save();
+};
+
+document.getElementById("clearChecks").onclick=()=>{
+  collectRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.classList.remove("done");
+  });
+  save();
+  alert("Alle flueben er fjernet.");
+};
+
+document.getElementById("resetAll").onclick=()=>{
+  if(!confirm("Ryd alt? Det nulstiller HAR, KØB og alle flueben."))return;
+  collectRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.querySelector(".have").value="";
+    r.querySelector(".buy").value="";
+    r.classList.remove("done");
+  });
+  save();
+  alert("Alt er ryddet.");
 };
 
 load();
