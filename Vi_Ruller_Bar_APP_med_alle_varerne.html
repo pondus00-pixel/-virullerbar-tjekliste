@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vi Ruller Bar">
+<title>Vi Ruller Bar – Tjekliste</title>
+<style>
+:root{--bg:#f3f3f0;--card:#fff;--text:#111;--muted:#707070;--line:#e4e4df;--soft:#efefe9;--done:#eef7ef}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:12px 10px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.hero{padding:18px}
+h1{font-size:28px;line-height:1;margin:0}
+.sub{font-size:14px;color:var(--muted);margin-top:5px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.full{grid-column:1/-1}
+label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:5px}
+input[type=text],input[type=date],select{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px;font-size:16px;background:#fff;color:#111}
+.section{margin-top:12px}
+.section h2{font-size:14px;letter-spacing:.04em;margin:0;padding:14px 11px 8px}
+.headrow,.row{display:grid;grid-template-columns:30px minmax(92px,1fr) 70px 70px;gap:6px;align-items:center;padding:8px 9px}
+.headrow{font-size:10px;color:var(--muted);font-weight:800;padding-top:0}
+.row{border-top:1px solid var(--line)}
+.row.done{background:var(--done)}
+.name{font-size:14px;font-weight:700;line-height:1.15}
+.mini{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:8px 4px;text-align:center;font-size:14px}
+input[type=checkbox]{width:21px;height:21px;accent-color:#111}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+button{border:0;border-radius:13px;padding:12px 10px;font-size:14px;font-weight:800;background:#111;color:#fff}
+button.secondary{background:var(--soft);color:#111}
+.add{padding:12px}
+.addgrid{display:grid;grid-template-columns:1fr 140px auto;gap:8px}
+.custom-row .namewrap{display:flex;justify-content:space-between;align-items:center;gap:5px}
+.remove{font-size:10px;padding:4px 6px;border-radius:7px;background:#fff2f2;color:#a12626;border:1px solid #efd2d2}
+.shop{padding:14px}
+.shop-title{font-size:22px;font-weight:900;margin:0 0 4px}
+.shop-sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+.shop-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fafafa;margin-bottom:8px}
+.shop-name{font-weight:750}.shop-qty{font-weight:900}
+.empty{font-size:14px;color:var(--muted);padding:6px 0}
+.note{font-size:12px;color:var(--muted);padding:12px 3px;line-height:1.4}
+@media(max-width:480px){.addgrid{grid-template-columns:1fr 105px}.addgrid button{grid-column:1/-1}}
+@media(max-width:390px){.headrow,.row{grid-template-columns:28px minmax(78px,1fr) 63px 63px;gap:5px;padding-left:7px;padding-right:7px}.name{font-size:13px}.mini{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="card hero">
+  <h1>VI RULLER BAR</h1>
+  <div class="sub">Tjekliste & automatisk indkøbsliste</div>
+  <div class="meta">
+    <div class="full"><label>ARRANGEMENT</label><input id="eventName" type="text" placeholder="Fx firmafest"></div>
+    <div><label>DATO</label><input id="eventDate" type="date"></div>
+    <div><label>GÆSTER</label><input id="eventGuests" type="text" inputmode="numeric" placeholder="Fx 80"></div>
+  </div>
+</section>
+
+
+    <section class="card section">
+      <h2>SPIRITUS &amp; LIKØR</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="spiritus-likoer-gin" data-name="Gin" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Gin</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-rom" data-name="Rom" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rom</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-vodka" data-name="Vodka" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Vodka</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-aperol" data-name="Aperol" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Aperol</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-kaffelikoer" data-name="Kaffelikør" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Kaffelikør</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>SIRUP &amp; JUICE</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="sirup-juice-mango-sirup" data-name="Mango sirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mango sirup</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-brombaer-sirup" data-name="Brombær sirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Brombær sirup</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-sukkersirup" data-name="Sukkersirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sukkersirup</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-ananasjuice" data-name="Ananasjuice" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Ananasjuice</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>MIXER &amp; BOBLER</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="mixer-bobler-tonic" data-name="Tonic" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Tonic</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-danskvand" data-name="Danskvand" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Danskvand</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-prosecco" data-name="Prosecco" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Prosecco</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-soede-bobler-velkomstdrink" data-name="Søde bobler – velkomstdrink" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Søde bobler – velkomstdrink</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-maelk" data-name="Mælk" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mælk</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>ØL, VIN &amp; SODAVAND</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="oel-vin-sodavand-fadoel" data-name="Fadøl" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Fadøl</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-hvidvin" data-name="Hvidvin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Hvidvin</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-roedvin" data-name="Rødvin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rødvin</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-ros-vin" data-name="Rosévin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rosévin</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-sodavand" data-name="Sodavand" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sodavand</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-vand" data-name="Vand" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Vand</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>FRISKVARER &amp; PYNT</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="friskvarer-pynt-lime" data-name="Lime" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Lime</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-citron" data-name="Citron" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Citron</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-appelsiner" data-name="Appelsiner" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Appelsiner</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-mynte" data-name="Mynte" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mynte</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-garnish-pynt" data-name="Garnish / pynt" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Garnish / pynt</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-isterninger" data-name="Isterninger" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Isterninger</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>BARUDSTYR</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="barudstyr-kopper" data-name="Kopper" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Kopper</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-sugeroer" data-name="Sugerør" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sugerør</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-shaker" data-name="Shaker" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Shaker</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-viskestykker" data-name="Viskestykker" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Viskestykker</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-klude" data-name="Klude" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Klude</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-affaldsposer" data-name="Affaldsposer" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Affaldsposer</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-servietter" data-name="Servietter" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Servietter</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-jigger-maalebaeger" data-name="Jigger / målebæger" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Jigger / målebæger</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-oplukkere" data-name="Oplukkere" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Oplukkere</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-glas" data-name="Glas" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Glas</div>
+          <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+          <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">
+        </div>
+    </section>
+
+<section class="card section" id="customSection">
+  <h2>EGNE VARER</h2>
+  <div class="headrow"><div></div><div>VARE</div><div>HAR</div><div>KØB</div></div>
+  <div id="customRows"><div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div></div>
+</section>
+
+<section class="card section">
+  <h2>TILFØJ NY VARE</h2>
+  <div class="add">
+    <div class="addgrid">
+      <input id="newItem" type="text" placeholder="Navn på ny vare">
+      <select id="newCategory"><option value="SPIRITUS &amp; LIKØR">SPIRITUS &amp; LIKØR</option><option value="SIRUP &amp; JUICE">SIRUP &amp; JUICE</option><option value="MIXER &amp; BOBLER">MIXER &amp; BOBLER</option><option value="ØL, VIN &amp; SODAVAND">ØL, VIN &amp; SODAVAND</option><option value="FRISKVARER &amp; PYNT">FRISKVARER &amp; PYNT</option><option value="BARUDSTYR">BARUDSTYR</option><option value="EGNE VARER">EGNE VARER</option></select>
+      <button id="addItem">Tilføj vare</button>
+    </div>
+  </div>
+</section>
+
+<section class="card section">
+  <div class="shop">
+    <div class="shop-title">INDKØBSLISTE</div>
+    <div class="shop-sub">Alt du skriver i KØB kommer automatisk med her.</div>
+    <div id="shoppingList"><div class="empty">Skriv et antal under KØB – så kommer varen automatisk her.</div></div>
+    <div class="actions">
+      <button id="copyList">Kopiér indkøbsliste</button>
+      <button id="newEvent" class="secondary">Nyt arrangement</button>
+    </div>
+  </div>
+</section>
+
+<div class="note">De faste varer står direkte i siden, så de altid kan ses. Gemmefunktion, egne varer og indkøbslisten virker, når siden åbnes som web-app i Safari.</div>
+</div>
+
+<script>
+const KEY="vrb_static_app_v1";
+let customItems=[];
+
+function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+
+function collectRows(){
+  return [...document.querySelectorAll(".row")];
+}
+
+function updateShopping(){
+  const items=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy) items.push({name:r.dataset.name,qty:buy});
+  });
+  const box=document.getElementById("shoppingList");
+  box.innerHTML=items.length
+   ? items.map(x=>`<div class="shop-item"><div class="shop-name">${esc(x.name)}</div><div class="shop-qty">${esc(x.qty)}</div></div>`).join("")
+   : '<div class="empty">Skriv et antal under KØB – så kommer varen automatisk her.</div>';
+}
+
+function save(){
+  const rows={};
+  collectRows().forEach(r=>{
+    rows[r.dataset.key]={
+      done:r.querySelector(".done")?.checked||false,
+      have:r.querySelector(".have")?.value||"",
+      buy:r.querySelector(".buy")?.value||""
+    };
+  });
+  const data={
+    eventName:document.getElementById("eventName").value,
+    eventDate:document.getElementById("eventDate").value,
+    eventGuests:document.getElementById("eventGuests").value,
+    customItems,
+    rows
+  };
+  try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
+  updateShopping();
+}
+
+function bindRow(r){
+  const done=r.querySelector(".done");
+  const have=r.querySelector(".have");
+  const buy=r.querySelector(".buy");
+  done?.addEventListener("change",()=>{r.classList.toggle("done",done.checked);save()});
+  have?.addEventListener("input",save);
+  buy?.addEventListener("input",save);
+}
+
+function addCustomToDom(item){
+  const wrap=document.getElementById("customRows");
+  document.getElementById("customEmpty")?.remove();
+  const key=item.key;
+  const div=document.createElement("div");
+  div.className="row custom-row";
+  div.dataset.key=key;
+  div.dataset.name=item.name;
+  div.dataset.category=item.category;
+  div.innerHTML=`
+    <input class="done" type="checkbox">
+    <div class="namewrap"><div class="name">${esc(item.name)}</div><button class="remove" type="button">Slet</button></div>
+    <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
+    <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">`;
+  wrap.appendChild(div);
+  div.querySelector(".remove").onclick=()=>{
+    customItems=customItems.filter(x=>x.key!==key);
+    div.remove();
+    if(!document.querySelector("#customRows .row")){
+      wrap.innerHTML='<div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div>';
+    }
+    save();
+  };
+  bindRow(div);
+}
+
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(!d){collectRows().forEach(bindRow);return}
+    document.getElementById("eventName").value=d.eventName||"";
+    document.getElementById("eventDate").value=d.eventDate||"";
+    document.getElementById("eventGuests").value=d.eventGuests||"";
+    customItems=d.customItems||[];
+    customItems.forEach(addCustomToDom);
+    collectRows().forEach(r=>{
+      bindRow(r);
+      const x=d.rows?.[r.dataset.key];
+      if(x){
+        r.querySelector(".done").checked=!!x.done;
+        r.querySelector(".have").value=x.have||"";
+        r.querySelector(".buy").value=x.buy||"";
+        r.classList.toggle("done",!!x.done);
+      }
+    });
+  }catch(e){collectRows().forEach(bindRow)}
+  updateShopping();
+}
+
+["eventName","eventDate","eventGuests"].forEach(id=>document.getElementById(id).addEventListener("input",save));
+
+document.getElementById("addItem").onclick=()=>{
+  const inp=document.getElementById("newItem");
+  const name=inp.value.trim();
+  if(!name)return;
+  const item={key:"custom-"+Date.now(),name,category:document.getElementById("newCategory").value};
+  customItems.push(item);
+  addCustomToDom(item);
+  inp.value="";
+  save();
+};
+document.getElementById("newItem").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("addItem").click()});
+
+document.getElementById("copyList").onclick=async()=>{
+  const lines=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy)lines.push("• "+r.dataset.name+": "+buy);
+  });
+  const txt=(document.getElementById("eventName").value||"Arrangement")+"\n\nINDKØBSLISTE\n"+(lines.length?lines.join("\n"):"Ingen varer.");
+  try{await navigator.clipboard.writeText(txt);alert("Indkøbslisten er kopieret.")}
+  catch(e){prompt("Kopiér indkøbslisten:",txt)}
+};
+
+document.getElementById("newEvent").onclick=()=>{
+  if(!confirm("Starte et nyt arrangement og nulstille antal?"))return;
+  document.getElementById("eventName").value="";
+  document.getElementById("eventDate").value="";
+  document.getElementById("eventGuests").value="";
+  collectRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.querySelector(".have").value="";
+    r.querySelector(".buy").value="";
+    r.classList.remove("done");
+  });
+  save();
+};
+
+load();
+</script>
+</body>
+</html>
