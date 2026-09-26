@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vi Ruller Bar">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Vi Ruller Bar – Tjekliste</title>
+<style>
+:root{--bg:#f3f3f0;--card:#fff;--text:#111;--muted:#707070;--line:#e4e4df;--soft:#efefe9;--done:#eef7ef}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:12px 10px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.hero{padding:18px}
+h1{font-size:28px;line-height:1;margin:0}
+.sub{font-size:14px;color:var(--muted);margin-top:5px}
+.meta{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
+.meta>div{min-width:0}
+.meta input{min-width:0;max-width:100%;display:block}
+.full{grid-column:1/-1}
+.meta-2col{display:grid;grid-template-columns:1fr;gap:9px;align-items:start}
+.meta-2col>div{min-width:0}
+.meta-2col input{width:100%;min-width:0;max-width:100%;display:block}
+
+label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:5px}
+input[type=text],input[type=date],select{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px;font-size:16px;background:#fff;color:#111}
+.section{margin-top:12px}
+.section h2{font-size:14px;letter-spacing:.04em;margin:0;padding:14px 11px 8px}
+.headrow,.row{display:grid;grid-template-columns:28px minmax(92px,1fr) 62px 62px 62px;gap:5px;align-items:center;padding:8px 8px}
+.headrow{font-size:10px;color:var(--muted);font-weight:800;padding-top:0}
+.row{border-top:1px solid var(--line)}
+.row.done{background:var(--done)}
+.name{font-size:14px;font-weight:700;line-height:1.15}
+.mini{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:8px 4px;text-align:center;font-size:14px}
+input[type=checkbox]{width:21px;height:21px;accent-color:#111}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.single-action{grid-template-columns:1fr}
+button{border:0;border-radius:13px;padding:12px 10px;font-size:14px;font-weight:800;background:#111;color:#fff}
+button.secondary{background:var(--soft);color:#111}
+button.danger{background:#fff3f3;color:#a12626;border:1px solid #efd2d2}
+.add{padding:12px}
+.addgrid{display:grid;grid-template-columns:1fr 140px auto;gap:8px}
+.namewrap{display:flex;justify-content:space-between;align-items:center;gap:5px;min-width:0}
+.hidden-row{display:none!important}
+.row > .stock{display:none!important}
+.remove{font-size:10px;padding:4px 6px;border-radius:7px;background:#fff2f2;color:#a12626;border:1px solid #efd2d2}
+.shop{padding:14px}
+.shop-title{font-size:22px;font-weight:900;margin:0 0 4px}
+.shop-sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+.shop-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fafafa;margin-bottom:8px}
+.shop-name{font-weight:750}.shop-qty{font-weight:900}
+.stock-category{font-size:12px;font-weight:900;letter-spacing:.04em;color:var(--muted);margin:16px 2px 7px}
+.stock-edit-row{display:grid;grid-template-columns:1fr 82px;gap:10px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:#fafafa;margin-bottom:7px}
+.stock-edit-name{font-size:14px;font-weight:750}
+.stock-edit-input{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 5px;text-align:center;font-size:16px;background:#fff}
+
+.stock-launch{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;padding:17px 16px;border-radius:18px;background:#111;color:#fff}
+.stock-launch strong{display:block;font-size:20px}
+.stock-launch small{display:block;font-size:12px;font-weight:600;opacity:.72;margin-top:3px}
+.stock-launch-arrow{font-size:34px;font-weight:400;line-height:1}
+.stock-page{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.stock-page.open{display:block}
+.stock-page-inner{max-width:760px;margin:0 auto;padding:12px 10px 60px}
+.stock-page-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.stock-page-top h1{margin-top:4px}
+.stock-back{flex:0 0 auto;background:var(--soft);color:#111;padding:10px 12px;margin-top:1px}
+.stock-page-info{padding:13px 14px;font-size:13px;line-height:1.4;margin-bottom:12px}
+.stock-page-info strong{display:block;margin-bottom:3px}
+.warehouse-category{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:12px}
+.warehouse-category h2{font-size:14px;letter-spacing:.04em;margin:0;padding:14px 12px 9px}
+.warehouse-head,.warehouse-row{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:10px;align-items:center;padding:9px 12px}
+.warehouse-head{font-size:10px;color:var(--muted);font-weight:900;padding-top:0}
+.warehouse-row{border-top:1px solid var(--line)}
+.warehouse-name{font-size:14px;font-weight:750}
+.warehouse-input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 5px;text-align:center;font-size:16px;background:#fff;color:#111}
+.warehouse-input:focus{outline:2px solid #111;outline-offset:1px}
+@media(max-width:390px){.warehouse-head,.warehouse-row{grid-template-columns:minmax(0,1fr) 78px}.warehouse-name{font-size:13px}}
+
+
+.empty{font-size:14px;color:var(--muted);padding:6px 0}
+.note{font-size:12px;color:var(--muted);padding:12px 3px;line-height:1.4}
+@media(max-width:480px){.addgrid{grid-template-columns:1fr 105px}.addgrid button{grid-column:1/-1}}
+@media(max-width:390px){.headrow,.row{grid-template-columns:26px minmax(76px,1fr) 54px 54px 54px;gap:4px;padding-left:6px;padding-right:6px}.name{font-size:12px}.mini{font-size:12px;padding:7px 2px}.remove{font-size:9px;padding:3px 5px}.headrow{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="card hero">
+  <h1>VI RULLER BAR</h1>
+  <div class="sub">Tjekliste & automatisk indkøbsliste</div>
+  <div class="meta">
+    <div class="full"><label>ARRANGEMENT</label><input id="eventName" type="text" placeholder="Fx firmafest"></div>
+    <div class="meta-2col">
+      <div><label>DATO</label><input id="eventDate" type="date"></div>
+      <div><label>ANTAL GÆSTER</label><input id="eventGuests" type="text" inputmode="numeric" placeholder="Fx 80"></div>
+    </div>
+  </div>
+</section>
+
+
+    <section class="card section">
+      <h2>SPIRITUS &amp; LIKØR</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="spiritus-likoer-gin" data-name="Gin" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Gin</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-rom" data-name="Rom" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rom</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-vodka" data-name="Vodka" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Vodka</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-aperol" data-name="Aperol" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Aperol</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="spiritus-likoer-kaffelikoer" data-name="Kaffelikør" data-category="SPIRITUS &amp; LIKØR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Kaffelikør</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>SIRUP &amp; JUICE</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="sirup-juice-mango-sirup" data-name="Mango sirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mango sirup</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-brombaer-sirup" data-name="Brombær sirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Brombær sirup</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-sukkersirup" data-name="Sukkersirup" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sukkersirup</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="sirup-juice-ananasjuice" data-name="Ananasjuice" data-category="SIRUP &amp; JUICE">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Ananasjuice</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>MIXER &amp; BOBLER</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="mixer-bobler-tonic" data-name="Tonic" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Tonic</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-danskvand" data-name="Danskvand" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Danskvand</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-prosecco" data-name="Prosecco" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Prosecco</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-soede-bobler-velkomstdrink" data-name="Søde bobler – velkomstdrink" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Søde bobler – velkomstdrink</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="mixer-bobler-maelk" data-name="Mælk" data-category="MIXER &amp; BOBLER">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mælk</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>ØL, VIN &amp; SODAVAND</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="oel-vin-sodavand-fadoel" data-name="Fadøl" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Fadøl</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-hvidvin" data-name="Hvidvin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Hvidvin</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-roedvin" data-name="Rødvin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rødvin</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-ros-vin" data-name="Rosévin" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Rosévin</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-sodavand" data-name="Sodavand" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sodavand</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="oel-vin-sodavand-vand" data-name="Vand" data-category="ØL, VIN &amp; SODAVAND">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Vand</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>FRISKVARER &amp; PYNT</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="friskvarer-pynt-lime" data-name="Lime" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Lime</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-citron" data-name="Citron" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Citron</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-appelsiner" data-name="Appelsiner" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Appelsiner</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-mynte" data-name="Mynte" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Mynte</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-garnish-pynt" data-name="Garnish / pynt" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Garnish / pynt</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="friskvarer-pynt-isterninger" data-name="Isterninger" data-category="FRISKVARER &amp; PYNT">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Isterninger</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+    <section class="card section">
+      <h2>BARUDSTYR</h2>
+      <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+      
+        <div class="row fixed-row" data-key="barudstyr-kopper" data-name="Kopper" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Kopper</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-sugeroer" data-name="Sugerør" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Sugerør</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-shaker" data-name="Shaker" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Shaker</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-viskestykker" data-name="Viskestykker" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Viskestykker</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-klude" data-name="Klude" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Klude</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-affaldsposer" data-name="Affaldsposer" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Affaldsposer</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-servietter" data-name="Servietter" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Servietter</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-jigger-maalebaeger" data-name="Jigger / målebæger" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Jigger / målebæger</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-oplukkere" data-name="Oplukkere" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Oplukkere</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+        <div class="row fixed-row" data-key="barudstyr-glas" data-name="Glas" data-category="BARUDSTYR">
+          <input class="done" type="checkbox" aria-label="Færdig">
+          <div class="name">Glas</div>
+          <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+          <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+          <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+          <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">
+        </div>
+    </section>
+
+<section class="card section" id="customSection">
+  <h2>EGNE VARER</h2>
+  <div class="headrow"><div></div><div>VARE</div><div>TAG</div><div>RETUR</div><div>KØB</div></div>
+  <div id="customRows"><div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div></div>
+</section>
+
+<section class="card section">
+  <h2>TILFØJ NY VARE</h2>
+  <div class="add">
+    <div class="addgrid">
+      <input id="newItem" type="text" placeholder="Navn på ny vare">
+      <select id="newCategory"><option value="SPIRITUS &amp; LIKØR">SPIRITUS &amp; LIKØR</option><option value="SIRUP &amp; JUICE">SIRUP &amp; JUICE</option><option value="MIXER &amp; BOBLER">MIXER &amp; BOBLER</option><option value="ØL, VIN &amp; SODAVAND">ØL, VIN &amp; SODAVAND</option><option value="FRISKVARER &amp; PYNT">FRISKVARER &amp; PYNT</option><option value="BARUDSTYR">BARUDSTYR</option><option value="EGNE VARER">EGNE VARER</option></select>
+      <button id="addItem">Tilføj vare</button>
+    </div>
+  </div>
+</section>
+
+<section class="card section">
+  <div class="shop">
+    <div class="shop-title">LAGERSTYRING</div>
+    <div class="shop-sub">Brug TAG, RETUR og KØB oppe ved varerne. Din faktiske lagerbeholdning vises kun nederst i LAGERLISTE.</div>
+    <div class="actions">
+      <button id="deductStock">Træk TAG fra lager</button>
+      <button id="returnToStock">Læg RETUR på lager</button>
+    </div>
+    <div class="actions">
+      <button id="addPurchasesToStock">Læg KØB på lager</button>
+      <button id="clearEventCounts" class="secondary">Ryd TAG & RETUR</button>
+    </div>
+  </div>
+</section>
+
+<section class="card section">
+  <div class="shop">
+    <div class="shop-title">INDKØBSLISTE</div>
+    <div class="shop-sub">Alt du skriver i KØB kommer automatisk med her.</div>
+    <div id="shoppingList"><div class="empty">Skriv et antal under KØB – så kommer varen automatisk her.</div></div>
+    <div class="actions">
+      <button id="copyList">Kopiér indkøbsliste</button>
+      <button id="smsList">Send som SMS</button>
+    </div>
+    <div class="actions">
+      <button id="newEvent" class="secondary">Nyt arrangement</button>
+      <button id="resetAll" class="danger">Ryd arrangement</button>
+    </div>
+    <div class="actions">
+      <button id="clearChecks" class="secondary">Fjern flueben</button>
+      <button id="restoreDefaults" class="secondary">Gendan standardvarer</button>
+    </div>
+  </div>
+</section>
+
+
+<section class="card section">
+  <button id="openStockPage" class="stock-launch" type="button">
+    <span>
+      <strong>MIT LAGER</strong>
+      <small>Se og ret hele lagerlisten</small>
+    </span>
+    <span class="stock-launch-arrow">›</span>
+  </button>
+</section>
+
+<div id="stockPage" class="stock-page" aria-hidden="true">
+  <div class="stock-page-inner">
+    <div class="stock-page-top">
+      <button id="closeStockPage" class="stock-back" type="button">← Tilbage</button>
+      <div>
+        <h1>MIT LAGER</h1>
+        <div class="sub">Hele lagerlisten – ret antal direkte ud for varen.</div>
+      </div>
+    </div>
+
+    <div class="card stock-page-info">
+      <strong>Sådan bruger du lageret</strong>
+      <div>Skriv det antal, du faktisk har hjemme. Ændringer gemmes automatisk.</div>
+    </div>
+
+    <div id="stockPageList"></div>
+  </div>
+</div>
+
+<div class="note">Tryk på MIT LAGER for at åbne hele lagerlisten. Lagerantal gemmes automatisk på denne iPhone.</div>
+</div>
+
+<script>
+const KEY="vrb_static_app_v1";
+let customItems=[];
+let hiddenFixed=[];
+
+function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+
+function collectRows(){
+  return [...document.querySelectorAll(".row:not(.hidden-row)")];
+}
+
+function allRows(){
+  return [...document.querySelectorAll(".row")];
+}
+
+function countValue(v){
+  const s=String(v??"").trim();
+  if(s==="")return 0;
+  if(!/^\d+$/.test(s))return NaN;
+  return Number(s);
+}
+
+function renderStockPage(){
+  const box=document.getElementById("stockPageList");
+  if(!box)return;
+
+  const rows=collectRows();
+  if(!rows.length){
+    box.innerHTML='<div class="card" style="padding:16px"><div class="empty">Der er ingen varer på lagerlisten.</div></div>';
+    return;
+  }
+
+  const groups=[];
+  rows.forEach(r=>{
+    const category=r.dataset.category||"ANDRE VARER";
+    let group=groups.find(g=>g.category===category);
+    if(!group){
+      group={category,rows:[]};
+      groups.push(group);
+    }
+    group.rows.push(r);
+  });
+
+  box.innerHTML=groups.map(group=>{
+    const items=group.rows.map(r=>{
+      const raw=r.querySelector(".stock")?.value||"";
+      return `<div class="warehouse-row" data-stock-key="${esc(r.dataset.key)}">
+        <div class="warehouse-name">${esc(r.dataset.name)}</div>
+        <input class="warehouse-input" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(raw)}" placeholder="0" aria-label="Lagerantal for ${esc(r.dataset.name)}">
+      </div>`;
+    }).join("");
+
+    return `<section class="warehouse-category">
+      <h2>${esc(group.category)}</h2>
+      <div class="warehouse-head"><div>VARE</div><div>LAGER</div></div>
+      ${items}
+    </section>`;
+  }).join("");
+
+  box.querySelectorAll(".warehouse-row").forEach(editor=>{
+    const key=editor.dataset.stockKey;
+    const input=editor.querySelector(".warehouse-input");
+    const row=allRows().find(r=>r.dataset.key===key);
+    if(!row || !input)return;
+
+    input.addEventListener("input",()=>{
+      input.value=input.value.replace(/\D/g,"");
+      row.querySelector(".stock").value=input.value;
+      save(false);
+    });
+  });
+}
+
+function updateStockOverview(){
+  if(document.getElementById("stockPage")?.classList.contains("open")){
+    renderStockPage();
+  }
+}
+
+function openStockPage(){
+  renderStockPage();
+  const page=document.getElementById("stockPage");
+  page.classList.add("open");
+  page.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+  page.scrollTop=0;
+}
+
+function closeStockPage(){
+  const page=document.getElementById("stockPage");
+  page.classList.remove("open");
+  page.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
+
+function setupFixedDeleteButtons(){
+  document.querySelectorAll(".fixed-row").forEach(r=>{
+    if(r.dataset.deleteReady==="1")return;
+
+    const name=r.querySelector(".name");
+    let wrap=r.querySelector(".namewrap");
+
+    if(!wrap){
+      wrap=document.createElement("div");
+      wrap.className="namewrap";
+      name.replaceWith(wrap);
+      wrap.appendChild(name);
+    }
+
+    const btn=document.createElement("button");
+    btn.className="remove";
+    btn.type="button";
+    btn.textContent="Slet";
+    btn.setAttribute("aria-label","Slet "+r.dataset.name);
+    wrap.appendChild(btn);
+
+    btn.onclick=()=>{
+      if(!confirm("Slet "+r.dataset.name+" fra listen?"))return;
+
+      const key=r.dataset.key;
+      if(!hiddenFixed.includes(key))hiddenFixed.push(key);
+
+      r.querySelector(".done").checked=false;
+      r.querySelector(".stock").value="";
+      r.querySelector(".buy").value="";
+      r.classList.remove("done");
+      r.classList.add("hidden-row");
+      save();
+    };
+
+    r.dataset.deleteReady="1";
+  });
+}
+
+function applyHiddenFixed(){
+  document.querySelectorAll(".fixed-row").forEach(r=>{
+    r.classList.toggle("hidden-row",hiddenFixed.includes(r.dataset.key));
+  });
+}
+
+function updateShopping(){
+  const items=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy) items.push({name:r.dataset.name,qty:buy});
+  });
+  const box=document.getElementById("shoppingList");
+  box.innerHTML=items.length
+   ? items.map(x=>`<div class="shop-item"><div class="shop-name">${esc(x.name)}</div><div class="shop-qty">${esc(x.qty)}</div></div>`).join("")
+   : '<div class="empty">Skriv et antal under KØB – så kommer varen automatisk her.</div>';
+}
+
+function save(renderStock=true){
+  const rows={};
+  allRows().forEach(r=>{
+    rows[r.dataset.key]={
+      done:r.querySelector(".done")?.checked||false,
+      stock:r.querySelector(".stock")?.value||"",
+      take:r.querySelector(".take")?.value||"",
+      returnQty:r.querySelector(".return")?.value||"",
+      buy:r.querySelector(".buy")?.value||""
+    };
+  });
+
+  const data={
+    eventName:document.getElementById("eventName").value,
+    eventDate:document.getElementById("eventDate").value,
+    eventGuests:document.getElementById("eventGuests").value,
+    customItems,
+    hiddenFixed,
+    rows
+  };
+
+  try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
+  updateShopping();
+  if(renderStock)updateStockOverview();
+}
+
+function bindRow(r){
+  if(r.dataset.bound==="1")return;
+  r.dataset.bound="1";
+
+  const done=r.querySelector(".done");
+  const stock=r.querySelector(".stock");
+  const take=r.querySelector(".take");
+  const returnQty=r.querySelector(".return");
+  const buy=r.querySelector(".buy");
+
+  done?.addEventListener("change",()=>{r.classList.toggle("done",done.checked);save()});
+  take?.addEventListener("input",save);
+  returnQty?.addEventListener("input",save);
+  buy?.addEventListener("input",save);
+}
+
+function addCustomToDom(item){
+  let wrap;
+
+  if(item.category==="EGNE VARER"){
+    wrap=document.getElementById("customRows");
+    document.getElementById("customEmpty")?.remove();
+  }else{
+    const section=[...document.querySelectorAll(".section")].find(sec=>{
+      const h=sec.querySelector("h2");
+      return h && h.textContent.trim()===item.category;
+    });
+    wrap=section || document.getElementById("customRows");
+  }
+
+  const key=item.key;
+  const div=document.createElement("div");
+  div.className="row custom-row";
+  div.dataset.key=key;
+  div.dataset.name=item.name;
+  div.dataset.category=item.category;
+  div.innerHTML=`
+    <input class="done" type="checkbox">
+    <div class="namewrap"><div class="name">${esc(item.name)}</div><button class="remove" type="button">Slet</button></div>
+    <input class="mini stock" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Lager">
+    <input class="mini take" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Tag">
+    <input class="mini return" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Retur">
+    <input class="mini buy" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Køb">`;
+
+  wrap.appendChild(div);
+
+  div.querySelector(".remove").onclick=()=>{
+    customItems=customItems.filter(x=>x.key!==key);
+    div.remove();
+
+    if(item.category==="EGNE VARER" && !document.querySelector("#customRows .row")){
+      document.getElementById("customRows").innerHTML=
+        '<div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div>';
+    }
+    save();
+  };
+
+  bindRow(div);
+}
+
+function load(){
+  setupFixedDeleteButtons();
+
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY)||"null");
+
+    if(!d){
+      allRows().forEach(bindRow);
+      updateShopping();
+      updateStockOverview();
+      return;
+    }
+
+    document.getElementById("eventName").value=d.eventName||"";
+    document.getElementById("eventDate").value=d.eventDate||"";
+    document.getElementById("eventGuests").value=d.eventGuests||"";
+
+    customItems=d.customItems||[];
+    hiddenFixed=d.hiddenFixed||[];
+
+    customItems.forEach(addCustomToDom);
+    applyHiddenFixed();
+
+    allRows().forEach(r=>{
+      bindRow(r);
+      const x=d.rows?.[r.dataset.key];
+
+      if(x){
+        r.querySelector(".done").checked=!!x.done;
+
+        // Migrerer den gamle HAR-værdi til LAGER første gang.
+        const oldOrNewStock=(x.stock!==undefined ? x.stock : (x.have||""));
+        r.querySelector(".stock").value=oldOrNewStock||"";
+        r.querySelector(".take").value=x.take||"";
+        r.querySelector(".return").value=x.returnQty||"";
+        r.querySelector(".buy").value=x.buy||"";
+        r.classList.toggle("done",!!x.done);
+      }
+    });
+  }catch(e){
+    allRows().forEach(bindRow);
+  }
+
+  updateShopping();
+  updateStockOverview();
+}
+
+["eventName","eventDate","eventGuests"].forEach(id=>document.getElementById(id).addEventListener("input",save));
+
+document.getElementById("addItem").onclick=()=>{
+  const inp=document.getElementById("newItem");
+  const name=inp.value.trim();
+  if(!name)return;
+  const item={key:"custom-"+Date.now(),name,category:document.getElementById("newCategory").value};
+  customItems.push(item);
+  addCustomToDom(item);
+  inp.value="";
+  save();
+};
+document.getElementById("newItem").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("addItem").click()});
+
+document.getElementById("copyList").onclick=async()=>{
+  const lines=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy)lines.push("• "+r.dataset.name+": "+buy);
+  });
+  const txt=(document.getElementById("eventName").value||"Arrangement")+"\n\nINDKØBSLISTE\n"+(lines.length?lines.join("\n"):"Ingen varer.");
+  try{await navigator.clipboard.writeText(txt);alert("Indkøbslisten er kopieret.")}
+  catch(e){prompt("Kopiér indkøbslisten:",txt)}
+};
+
+
+
+document.getElementById("smsList").onclick=()=>{
+  const lines=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy)lines.push("• "+r.dataset.name+": "+buy);
+  });
+  if(!lines.length){
+    alert("Der er endnu ingen varer på indkøbslisten.");
+    return;
+  }
+  const eventName=document.getElementById("eventName").value.trim();
+  const eventDate=document.getElementById("eventDate").value.trim();
+  let txt="VI RULLER BAR – INDKØBSLISTE";
+  if(eventName)txt+="\n"+eventName;
+  if(eventDate)txt+=" – "+eventDate;
+  txt+="\n\n"+lines.join("\n");
+  window.location.href="sms:&body="+encodeURIComponent(txt);
+};
+document.getElementById("newEvent").onclick=()=>{
+  if(!confirm("Starte et nyt arrangement? Lageret bliver gemt."))return;
+
+  document.getElementById("eventName").value="";
+  document.getElementById("eventDate").value="";
+  document.getElementById("eventGuests").value="";
+
+  allRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.querySelector(".take").value="";
+    r.querySelector(".return").value="";
+    r.querySelector(".buy").value="";
+    r.classList.remove("done");
+  });
+
+  save();
+};
+
+document.getElementById("clearChecks").onclick=()=>{
+  collectRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.classList.remove("done");
+  });
+  save();
+  alert("Alle flueben er fjernet.");
+};
+
+document.getElementById("resetAll").onclick=()=>{
+  if(!confirm("Ryd arrangementet? Lageret bliver IKKE slettet."))return;
+
+  document.getElementById("eventName").value="";
+  document.getElementById("eventDate").value="";
+  document.getElementById("eventGuests").value="";
+
+  allRows().forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.querySelector(".take").value="";
+    r.querySelector(".return").value="";
+    r.querySelector(".buy").value="";
+    r.classList.remove("done");
+  });
+
+  save();
+  alert("Arrangementet er ryddet. Lageret er bevaret.");
+};
+
+
+
+document.getElementById("openStockPage").onclick=openStockPage;
+document.getElementById("closeStockPage").onclick=closeStockPage;
+
+document.getElementById("deductStock").onclick=()=>{
+  const changes=[];
+  const errors=[];
+
+  collectRows().forEach(r=>{
+    const tag=countValue(r.querySelector(".take")?.value);
+    const stock=countValue(r.querySelector(".stock")?.value);
+
+    if(Number.isNaN(tag) || Number.isNaN(stock)){
+      errors.push(r.dataset.name+": brug kun hele tal.");
+      return;
+    }
+
+    if(tag>0){
+      if(tag>stock){
+        errors.push(r.dataset.name+": lager "+stock+", TAG "+tag+".");
+      }else{
+        changes.push({r,stock,tag});
+      }
+    }
+  });
+
+  if(errors.length){
+    alert("Kan ikke trække fra lager:\n\n"+errors.slice(0,6).join("\n"));
+    return;
+  }
+
+  if(!changes.length){
+    alert("Der er ikke skrevet noget i TAG.");
+    return;
+  }
+
+  if(!confirm("Træk alle TAG-antal fra lager?"))return;
+
+  changes.forEach(({r,stock,tag})=>{
+    r.querySelector(".stock").value=String(stock-tag);
+    r.querySelector(".take").value="";
+  });
+
+  save();
+  alert("TAG er trukket fra lageret.");
+};
+
+document.getElementById("returnToStock").onclick=()=>{
+  const changes=[];
+  const errors=[];
+
+  collectRows().forEach(r=>{
+    const ret=countValue(r.querySelector(".return")?.value);
+    const stock=countValue(r.querySelector(".stock")?.value);
+
+    if(Number.isNaN(ret) || Number.isNaN(stock)){
+      errors.push(r.dataset.name+": brug kun hele tal.");
+      return;
+    }
+
+    if(ret>0)changes.push({r,stock,ret});
+  });
+
+  if(errors.length){
+    alert("Kan ikke lægge returvarer på lager:\n\n"+errors.slice(0,6).join("\n"));
+    return;
+  }
+
+  if(!changes.length){
+    alert("Der er ikke skrevet noget i RETUR.");
+    return;
+  }
+
+  if(!confirm("Læg alle RETUR-antal tilbage på lager?"))return;
+
+  changes.forEach(({r,stock,ret})=>{
+    r.querySelector(".stock").value=String(stock+ret);
+    r.querySelector(".return").value="";
+  });
+
+  save();
+  alert("RETUR er lagt tilbage på lageret.");
+};
+
+document.getElementById("addPurchasesToStock").onclick=()=>{
+  const changes=[];
+  const errors=[];
+
+  collectRows().forEach(r=>{
+    const buy=countValue(r.querySelector(".buy")?.value);
+    const stock=countValue(r.querySelector(".stock")?.value);
+
+    if(Number.isNaN(buy) || Number.isNaN(stock)){
+      errors.push(r.dataset.name+": brug kun hele tal.");
+      return;
+    }
+
+    if(buy>0)changes.push({r,stock,buy});
+  });
+
+  if(errors.length){
+    alert("Kan ikke lægge varer på lager:\n\n"+errors.slice(0,6).join("\n"));
+    return;
+  }
+
+  if(!changes.length){
+    alert("Der er ikke skrevet noget i KØB.");
+    return;
+  }
+
+  if(!confirm("Er varerne købt og klar til at blive lagt på lager?"))return;
+
+  changes.forEach(({r,stock,buy})=>{
+    r.querySelector(".stock").value=String(stock+buy);
+    r.querySelector(".buy").value="";
+  });
+
+  save();
+  alert("De købte varer er lagt på lager.");
+};
+
+document.getElementById("clearEventCounts").onclick=()=>{
+  if(!confirm("Ryd alle TAG- og RETUR-felter? Lageret ændres ikke."))return;
+
+  allRows().forEach(r=>{
+    r.querySelector(".take").value="";
+    r.querySelector(".return").value="";
+  });
+
+  save();
+};
+
+document.getElementById("restoreDefaults").onclick=()=>{
+  if(!hiddenFixed.length){
+    alert("Alle standardvarer er allerede på listen.");
+    return;
+  }
+
+  if(!confirm("Gendan alle slettede standardvarer?"))return;
+
+  hiddenFixed=[];
+  document.querySelectorAll(".fixed-row").forEach(r=>{
+    r.classList.remove("hidden-row");
+  });
+  save();
+  alert("Standardvarerne er gendannet.");
+};
+
+load();
+</script>
+</body>
+</html>
