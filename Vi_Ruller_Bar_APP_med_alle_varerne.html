@@ -33,6 +33,7 @@ input[type=text],input[type=date],select{width:100%;border:1px solid var(--line)
 .mini{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:8px 4px;text-align:center;font-size:14px}
 input[type=checkbox]{width:21px;height:21px;accent-color:#111}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.single-action{grid-template-columns:1fr}
 button{border:0;border-radius:13px;padding:12px 10px;font-size:14px;font-weight:800;background:#111;color:#fff}
 button.secondary{background:var(--soft);color:#111}
 button.danger{background:#fff3f3;color:#a12626;border:1px solid #efd2d2}
@@ -335,16 +336,19 @@ button.danger{background:#fff3f3;color:#a12626;border:1px solid #efd2d2}
     <div id="shoppingList"><div class="empty">Skriv et antal under KØB – så kommer varen automatisk her.</div></div>
     <div class="actions">
       <button id="copyList">Kopiér indkøbsliste</button>
-      <button id="newEvent" class="secondary">Nyt arrangement</button>
+      <button id="smsList">Send som SMS</button>
     </div>
     <div class="actions">
+      <button id="newEvent" class="secondary">Nyt arrangement</button>
       <button id="resetAll" class="danger">Ryd alt</button>
+    </div>
+    <div class="actions single-action">
       <button id="clearChecks" class="secondary">Fjern flueben</button>
     </div>
   </div>
 </section>
 
-<div class="note">De faste varer står direkte i siden, så de altid kan ses. Gemmefunktion, egne varer, Ryd alt og indkøbslisten virker, når siden åbnes som web-app i Safari.</div>
+<div class="note">Nye varer lægges direkte ind i den kategori, du vælger. Gemmefunktion, Ryd alt og indkøbslisten virker i Safari.</div>
 </div>
 
 <script>
@@ -399,8 +403,19 @@ function bindRow(r){
 }
 
 function addCustomToDom(item){
-  const wrap=document.getElementById("customRows");
-  document.getElementById("customEmpty")?.remove();
+  let wrap;
+
+  if(item.category==="EGNE VARER"){
+    wrap=document.getElementById("customRows");
+    document.getElementById("customEmpty")?.remove();
+  }else{
+    const section=[...document.querySelectorAll(".section")].find(sec=>{
+      const h=sec.querySelector("h2");
+      return h && h.textContent.trim()===item.category;
+    });
+    wrap=section || document.getElementById("customRows");
+  }
+
   const key=item.key;
   const div=document.createElement("div");
   div.className="row custom-row";
@@ -412,15 +427,20 @@ function addCustomToDom(item){
     <div class="namewrap"><div class="name">${esc(item.name)}</div><button class="remove" type="button">Slet</button></div>
     <input class="mini have" type="text" inputmode="decimal" placeholder="Har">
     <input class="mini buy" type="text" inputmode="decimal" placeholder="Køb">`;
+
   wrap.appendChild(div);
+
   div.querySelector(".remove").onclick=()=>{
     customItems=customItems.filter(x=>x.key!==key);
     div.remove();
-    if(!document.querySelector("#customRows .row")){
-      wrap.innerHTML='<div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div>';
+
+    if(item.category==="EGNE VARER" && !document.querySelector("#customRows .row")){
+      document.getElementById("customRows").innerHTML=
+        '<div class="empty" id="customEmpty" style="padding:8px 12px 14px">Du kan tilføje dine egne varer herunder.</div>';
     }
     save();
   };
+
   bindRow(div);
 }
 
@@ -472,6 +492,26 @@ document.getElementById("copyList").onclick=async()=>{
   catch(e){prompt("Kopiér indkøbslisten:",txt)}
 };
 
+
+
+document.getElementById("smsList").onclick=()=>{
+  const lines=[];
+  collectRows().forEach(r=>{
+    const buy=r.querySelector(".buy")?.value.trim();
+    if(buy)lines.push("• "+r.dataset.name+": "+buy);
+  });
+  if(!lines.length){
+    alert("Der er endnu ingen varer på indkøbslisten.");
+    return;
+  }
+  const eventName=document.getElementById("eventName").value.trim();
+  const eventDate=document.getElementById("eventDate").value.trim();
+  let txt="VI RULLER BAR – INDKØBSLISTE";
+  if(eventName)txt+="\n"+eventName;
+  if(eventDate)txt+=" – "+eventDate;
+  txt+="\n\n"+lines.join("\n");
+  window.location.href="sms:&body="+encodeURIComponent(txt);
+};
 document.getElementById("newEvent").onclick=()=>{
   if(!confirm("Starte et nyt arrangement og nulstille antal?"))return;
   document.getElementById("eventName").value="";
